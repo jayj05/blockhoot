@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %} 
+<h3>Room Code:</h3>
+<div class="room-code-container">
+    {{code}}
+</div>
+
+<div class="active-players-box" id="active-players-box"></div>
+
+<button id="clickme-btn">Click Me</button>
+
+<script type="text/javascript">
+    // Initializing socket on client side
+    const socketio = io(); 
+    const activePlayers = document.getElementById("active-players-box"); 
+
+    socketio.on('newPlayer', (data) =>{
+        activePlayers.innerText += data.name; 
+    });
+
+    socketio.on('removePlayer', (data) =>{
+        activePlayers.innerText = "";
+        for (const key in data) {
+            activePlayers.innerText += key; 
+        }
+    });
+
+    socketio.on('start_game', () =>{
+        window.location.replace("{{url_for('game')}}");
+    });
+
+    const btn = document.getElementById("clickme-btn"); 
+    btn.onclick = () => {
+        socketio.emit("start_game"); 
+    }
+</script>
+
+
+
+<!--If members will determine if the page is being rendered-->
+{% if members %}
+<!--Then then the activePlayers feed will be cleared-->
+<script type="text/javascript">
+    activePlayers.innerText = "";
+</script>
+    <!--And updated with the current members-->
+    {% for member in members %}
+        <script type="text/javascript">
+            activePlayers.innerText += "{{member}}"; 
+        </script>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
