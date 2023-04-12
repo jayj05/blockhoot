@@ -11,7 +11,7 @@ Blockly.common.defineBlocksWithJsonArray([
 ]); 
 
 Blockly.JavaScript['move_left'] = function(block) {
-    return 'player.queue.push("move_left");\n'; 
+    return 'player.move_left();\n'; 
 }
 
 
@@ -26,5 +26,5 @@ Blockly.common.defineBlocksWithJsonArray([
 ]); 
 
 Blockly.JavaScript['move_right'] = function(block) {
-    return 'player.queue.push("move_right");\n'
+    return 'player.move_right();\n'
 }

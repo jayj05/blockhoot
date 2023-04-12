@@ -3,32 +3,43 @@
     const gameArea = new GameArea(400, 300, 16, 13);
     const map = gameArea.mapSetup().map;
     const player = new Player(20, 20, gameArea.startX, gameArea.startY, gameArea);
-    const moveDone = new Event("moveDone", {bubbles: true}); 
-    const startMove = new Event("startMove", {bubbles: true}); 
-    const canvas = document.querySelector("canvas"); 
 
     function updateGameArea(player, gameArea, map)
     {
-        gameArea.clear();
-        gameArea.update(map);
-        player.handleMove(canvas, moveDone, gameArea.mapSetup().barriers); 
+        gameArea.clear()
+        gameArea.update(map);  
         player.update(); 
     }
 
     function startGame()
     {
         gameArea.start(); 
-        setInterval(updateGameArea, 20, player, gameArea, map); 
+        update = updateGameArea(player, gameArea, map); 
+        setInterval(update, 20); 
+    }
+
+    function play()
+    {
+        let next = moves_queue.shift(); 
+        while(next)
+        {
+            if (next == "move_left")
+            {
+                player.move_left(); 
+            } 
+            else if (next == "move_right")
+            {
+                player.move_right(); 
+            }
+            next = moves_queue.shift();  
+        }
     }
 
     function handlePlay() 
     {
-        // Grabbing users workspace
         const workspace = Blockly.common.getMainWorkspace(); 
-        // Converting the blocks to javascript code
         let code = Blockly.JavaScript.workspaceToCode(workspace); 
-        // Dispatching a starter event that gets the player moving 
-        code += "canvas.dispatchEvent(startMove);"; 
+        console.log(code); 
         try 
         {
             eval(code)
@@ -36,11 +47,6 @@
         catch (error) {
             console.log(error); 
         }
-    }
-
-    function handleStartMove()
-    {
-        canvas.dispatchEvent(moveDone); 
     }
 
     toolbox = {
@@ -67,8 +73,7 @@
     })
 
     document.querySelector("#run-btn").addEventListener("click", handlePlay); 
-    canvas.addEventListener("startMove", handleStartMove); 
-    canvas.addEventListener("moveDone", player.play); 
-
     startGame();
 })();
+
+// MAKE BLOCK MOVE!!!
