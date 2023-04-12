@@ -73,7 +73,6 @@ def game():
     room = session.get("room")
     return render_template('game.html')
 
-# when the room page is rendered
 @socketio.on('connect')
 def connect(data):
     name = session.get("name")
@@ -82,9 +81,11 @@ def connect(data):
     # We are going to send them to their room
     join_room(room)
     rooms[room]['memberCount'] += 1
+
     # Store their name with their session id in a dictionary
     rooms[room]['members'][name] = request.sid
     print(rooms[room]['members'])
+
     # Updating the active players
     emit('newPlayer', {'name': name}, to=room)
 
@@ -99,10 +100,9 @@ def disconnect():
         if request.sid == sid:
             members.pop(member)
             break
+        
     # Updating the real time feed of the active players 
     emit('removePlayer', rooms[room]['members'], to=room)
-
-    # \\\\Check if there any members in the room, if not, then use close_room()////
 
 @socketio.on("start_game")
 def start_game():
