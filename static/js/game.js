@@ -18,6 +18,8 @@ function Player(width, height, x, y, gameArea)
     this.isMovingDown = false; 
     this.isMovingUp = false;  
 
+    this.isTouchingEndTile = false; 
+
     this.queue = []; 
 
     this.update = () => {
@@ -25,7 +27,7 @@ function Player(width, height, x, y, gameArea)
         gameArea.context.fillRect(this.x, this.y, width, height);
     }
 
-    this.collisionDetection = (barriers) => {
+    this.collisionDetection = (barriers, nextLevel) => {
   
         for (let piece = 0; piece < barriers.length; piece++)
         {
@@ -36,8 +38,9 @@ function Player(width, height, x, y, gameArea)
                  (this.y <= barrier.y + barrier.height && this.y >= barrier.y)))
             {
                 if (barrier.isEndTile){
+                    console.log("hit end tile"); 
                     this.score += 500; 
-
+                    gameArea.canvas.dispatchEvent(nextLevel); 
                 }
                 
                 this.stopMove = true; 
@@ -85,30 +88,30 @@ function Player(width, height, x, y, gameArea)
         }
     }
 
-    this.handleMove = (canvas, event, barriers) => {
-        if (this.stepTrack != 100 && !this.stopMove)
+    this.handleMove = (moveEvent, nextLevelEvent, barriers) => {
+        if (this.stepTrack != 15 && !this.stopMove)
         {
             if (this.isMovingLeft)
             {
-                this.collisionDetection(barriers);
+                this.collisionDetection(barriers, nextLevelEvent);
                 this.x -= 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingRight)
             {
-                this.collisionDetection(barriers); 
+                this.collisionDetection(barriers, nextLevelEvent); 
                 this.x += 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingDown)
             {
-                this.collisionDetection(barriers); 
+                this.collisionDetection(barriers, nextLevelEvent); 
                 this.y += 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingUp)
             {
-                this.collisionDetection(barriers); 
+                this.collisionDetection(barriers, nextLevelEvent); 
                 this.y -= 1; 
                 this.stepTrack += 1; 
             }
@@ -121,7 +124,7 @@ function Player(width, height, x, y, gameArea)
             this.isMovingUp = false; 
             this.stopMove = false; 
             this.stepTrack = 0; 
-            canvas.dispatchEvent(event); 
+            gameArea.canvas.dispatchEvent(moveEvent); 
         }
     }
 }
@@ -207,7 +210,9 @@ function GameArea(width, height, rowCount, colCount)
                     mapPiece = new Component(pieceWidth, pieceHeight,
                         pieceWidth*col, pieceHeight*row, this.context, true); 
                     mapPiece.color = "red"; 
+                    mapPiece.isEndTile = true; 
                     mapPieces.push(mapPiece); 
+                    barrierPieces.push(mapPiece); 
                 }
             }
         }

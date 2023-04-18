@@ -14,7 +14,7 @@
     {
         gameArea.clear();
         gameArea.update(map.map);
-        player.handleMove(canvas, moveDone, map.barriers); 
+        player.handleMove(moveDone, nextLevel, map.barriers); 
         player.update(); 
     }
 
@@ -48,6 +48,7 @@
 
     function handleNextLevel()
     {
+        console.log("next level"); 
         levelCount += 1; 
 
         if (levelCount == 2)
@@ -90,6 +91,7 @@
     document.querySelector("#run-btn").addEventListener("click", handlePlay); 
     canvas.addEventListener("startMove", handleStartMove); 
     canvas.addEventListener("moveDone", player.play); 
+    canvas.addEventListener("nextLevel", handleNextLevel); 
 
     startGame();
 })();
