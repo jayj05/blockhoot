@@ -39,7 +39,6 @@ function Player(width, height, x, y, gameArea)
             {
                 if (barrier.isEndTile){
                     console.log("hit end tile"); 
-                    this.score += 500; 
                     gameArea.canvas.dispatchEvent(nextLevel); 
                 }
                 
@@ -158,6 +157,8 @@ function GameArea(width, height, rowCount, colCount)
     this.startX = 0; 
     this.startY = 0;
 
+    this.currMap = null; 
+
     this.start = () => {
         // Initialize settings for canvas element 
         this.canvas.height = height; 
@@ -172,7 +173,6 @@ function GameArea(width, height, rowCount, colCount)
 
     this.mapSetup = (map) => {
         // Map Layout
-
         const pieceWidth = width/colCount;
         const pieceHeight = height/rowCount;
         let mapPieces = []; 

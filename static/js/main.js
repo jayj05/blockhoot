@@ -1,7 +1,10 @@
 (function () {
 
     const gameArea = new GameArea(400, 300, 16, 13);
-    let map = gameArea.mapSetup(maps.level_1); 
+
+    var map = gameArea.mapSetup(maps.level_1); 
+    gameArea.currMap = map; 
+
     let levelCount = 1; 
     const player = new Player(20, 20, gameArea.startX, gameArea.startY, gameArea);
     const moveDone = new Event("moveDone", {bubbles: true}); 
@@ -10,18 +13,18 @@
     const canvas = document.querySelector("canvas"); 
 
 
-    function updateGameArea(player, gameArea, map)
+    function updateGameArea(player, gameArea)
     {
         gameArea.clear();
-        gameArea.update(map.map);
-        player.handleMove(moveDone, nextLevel, map.barriers); 
+        gameArea.update(gameArea.currMap.map);
+        player.handleMove(moveDone, nextLevel, gameArea.currMap.barriers); 
         player.update(); 
     }
 
     function startGame()
     {
         gameArea.start(); 
-        setInterval(updateGameArea, 20, player, gameArea, map); 
+        setInterval(updateGameArea, 20, player, gameArea); 
     }
 
     function handlePlay() 
@@ -53,11 +56,12 @@
 
         if (levelCount == 2)
         {
-            map = gameArea.mapSetup(maps.level_2); 
+            console.log("level 2"); 
+            gameArea.currMap = gameArea.mapSetup(maps.level_2); 
         }
         else if (levelCount == 3)
         {
-            map = gameArea.mapSetup(maps.level_3); 
+            gameArea.currMap = gameArea.mapSetup(maps.level_3); 
         }
     }
 
