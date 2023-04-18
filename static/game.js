@@ -37,6 +37,7 @@ function Player(width, height, x, y, gameArea)
             {
                 if (barrier.isEndTile){
                     this.score += 500; 
+
                 }
                 
                 this.stopMove = true; 
@@ -154,8 +155,6 @@ function GameArea(width, height, rowCount, colCount)
     this.startX = 0; 
     this.startY = 0;
 
-    this.map; 
-
     this.start = () => {
         // Initialize settings for canvas element 
         this.canvas.height = height; 
@@ -168,27 +167,8 @@ function GameArea(width, height, rowCount, colCount)
         this.context.clearRect(0, 0, width, height);
     }
 
-    this.mapSetup = () => {
+    this.mapSetup = (map) => {
         // Map Layout
-        this.map = [
-            [1, 1, 1, 0, 2, 1, 0, 0, 1, 1, 1, 1, 1], 
-            [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1], 
-            [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1], 
-            [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1], 
-            [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1], 
-            [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
-            [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
-            [1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1], 
-            [1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1], 
-            [1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-            [1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1], 
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], 
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], 
-            [1, 1, 1, 1, 1, 1 ,1 ,1, 1, 1, 1, 3, 1]
-        ]; 
-
 
         const pieceWidth = width/colCount;
         const pieceHeight = height/rowCount;
@@ -202,7 +182,7 @@ function GameArea(width, height, rowCount, colCount)
         {
             for (let col = 0; col < colCount; col++)
             {
-                const tile = this.map[row][col]; 
+                const tile = map[row][col]; 
                 // Regular black barrier tile
                 if (tile == 1) 
                 {

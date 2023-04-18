@@ -1,17 +1,20 @@
 (function () {
 
     const gameArea = new GameArea(400, 300, 16, 13);
-    const map = gameArea.mapSetup().map;
+    let map = gameArea.mapSetup(maps.level_1); 
+    let levelCount = 1; 
     const player = new Player(20, 20, gameArea.startX, gameArea.startY, gameArea);
     const moveDone = new Event("moveDone", {bubbles: true}); 
     const startMove = new Event("startMove", {bubbles: true}); 
+    const nextLevel = new Event("nextLevel", {bubbles: true}); 
     const canvas = document.querySelector("canvas"); 
+
 
     function updateGameArea(player, gameArea, map)
     {
         gameArea.clear();
-        gameArea.update(map);
-        player.handleMove(canvas, moveDone, gameArea.mapSetup().barriers); 
+        gameArea.update(map.map);
+        player.handleMove(canvas, moveDone, map.barriers); 
         player.update(); 
     }
 
@@ -41,6 +44,20 @@
     function handleStartMove()
     {
         canvas.dispatchEvent(moveDone); 
+    }
+
+    function handleNextLevel()
+    {
+        levelCount += 1; 
+
+        if (levelCount == 2)
+        {
+            map = gameArea.mapSetup(maps.level_2); 
+        }
+        else if (levelCount == 3)
+        {
+            map = gameArea.mapSetup(maps.level_3); 
+        }
     }
 
     toolbox = {
