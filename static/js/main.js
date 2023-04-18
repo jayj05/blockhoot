@@ -2,8 +2,7 @@
 
     const gameArea = new GameArea(400, 300, 16, 13);
 
-    var map = gameArea.mapSetup(maps.level_1); 
-    gameArea.currMap = map; 
+    gameArea.currMap = gameArea.mapSetup(maps.level_1); ; 
 
     let levelCount = 1; 
     const player = new Player(20, 20, gameArea.startX, gameArea.startY, gameArea);
@@ -58,10 +57,14 @@
         {
             console.log("level 2"); 
             gameArea.currMap = gameArea.mapSetup(maps.level_2); 
+            player.x = gameArea.startX; 
+            player.y = gameArea.startY; 
         }
         else if (levelCount == 3)
         {
-            gameArea.currMap = gameArea.mapSetup(maps.level_3); 
+            gameArea.currMap = gameArea.mapSetup(maps.level_3);
+            player.x = gameArea.startX; 
+            player.y = gameArea.startY; 
         }
     }
 

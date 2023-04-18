@@ -70,7 +70,6 @@ def room():
 
 @app.route("/game")
 def game():
-    room = session.get("room")
     return render_template('game.html')
 
 # when the room page is rendered
