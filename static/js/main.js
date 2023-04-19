@@ -7,7 +7,7 @@
     gameArea.currMap = gameArea.mapSetup(maps.level_1, path_img, barrier_img, endtile_img);
 
     let levelCount = 1; 
-    const player = new Player(30, 30, gameArea.startX, gameArea.startY, gameArea);
+    const player = new Player(40, 40, gameArea.startX + 10, gameArea.startY, gameArea);
     const moveDone = new Event("moveDone", {bubbles: true}); 
     const startMove = new Event("startMove", {bubbles: true}); 
     const nextLevel = new Event("nextLevel", {bubbles: true}); 
@@ -61,13 +61,15 @@
         {
             console.log("level 2"); 
             gameArea.currMap = gameArea.mapSetup(maps.level_2, path_img, barrier_img, endtile_img); 
-            player.x = gameArea.startX; 
+            player.x = gameArea.startX + 10; 
             player.y = gameArea.startY; 
+            console.log(player.x + " " + player.y); 
+        
         }
         else if (levelCount == 3)
         {
             gameArea.currMap = gameArea.mapSetup(maps.level_3, path_img, barrier_img, endtile_img);
-            player.x = gameArea.startX; 
+            player.x = gameArea.startX + 10; 
             player.y = gameArea.startY; 
         }
     }

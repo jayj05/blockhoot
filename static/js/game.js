@@ -218,6 +218,7 @@ function GameArea(width, height, rowCount, colCount)
                         pieceWidth*col, pieceHeight*row, this.context, false, path_img); 
                     this.startX = pieceWidth*col; 
                     this.startY = pieceHeight*row; 
+                    console.log(this.startX + " " + this.startY); 
                     mapPieces.push(mapPiece); 
                 }
                 // End tile 

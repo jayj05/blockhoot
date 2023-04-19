@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 {% block content %} 
 
-<h1>Game</h1>
+<h1>Game Name</h1>
 <form method="post">
     <div class="form-container">
         <div>
-            <input name="name" placeholder="Name" value="{{name}}">
+            <input class="user-input" name="name" placeholder="Name" value="{{name}}">
         </div>
 
         <div>
-            <input name="joinCode" placeholder="Join Code" value="{{code}}">
+            <input class="user-input" name="joinCode" placeholder="Join Code" value="{{code}}">
         </div>
 
         <div>
-            <button type="submit" name="join">Join Room</button>
+            <button class="form-btn" type="submit" name="join">Join Room</button>
         </div>
 
         <div>
-            <button type="submit" name="create">Create Room</button>
+            <button class="form-btn" id="create-btn" type="submit" name="create">Create Room</button>
         </div>
     </div>
 

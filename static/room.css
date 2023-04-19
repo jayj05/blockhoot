@@ -1,0 +1,22 @@
+.room-code-container {
+    background-color: rgb(255, 131, 3);
+    width: 70%; 
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#room-code-text {
+    text-align: center;
+    color: white; 
+    font-size: 36pt;
+}
+
+/* .active-players-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+} */

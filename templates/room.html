@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% block content %} 
-<h3>Room Code:</h3>
-<div class="room-code-container">
-    {{code}}
+<div class="room-code-container"><div id="room-code-text">Room Code: {{code}}</div></div>
+<button id="start-game-btn">START GAME</button>
+<div class="active-players-box" id="active-players-box">
+    <!-- <div class="column"></div>
+    <div class="column"></div>
+    <div class="column"></div> -->
 </div>
-
-<div class="active-players-box" id="active-players-box"></div>
-
-<button id="clickme-btn">Click Me</button>
 
 <script type="text/javascript">
     // Initializing socket on client side
@@ -34,7 +33,7 @@
         // Add code to initialize leaderboard
     });
 
-    const btn = document.getElementById("clickme-btn"); 
+    const btn = document.getElementById("start-game-btn"); 
     btn.onclick = () => {
         socketio.emit("start_game"); 
     }
