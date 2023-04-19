@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 from flask_socketio import SocketIO, send, join_room, leave_room, emit
+from leaderBoard import LeaderBoard
 import random 
 from string import ascii_uppercase
 
@@ -8,13 +9,17 @@ app.secret_key = "h1idji3nh2ijh1ij3ijfnu38h9rh943hfvu9rj3"
 socketio = SocketIO(app) 
 code_characters = '0123456789' + ascii_uppercase
 
-rooms = {}   
+rooms = {} 
+
+score_track = {}
+leaderboard_sort = LeaderBoard()
+leaderboard = []
 
 def generate_unique_code(length):
     generating = True
     while generating:
         code = ""
-        for i in range(length):
+        for _ in range(length):
             code += random.choice(code_characters)
 
         if code not in rooms:
@@ -57,7 +62,7 @@ def home():
 
         # Redirect them to room page, where the socket will be initalized
         return redirect(url_for('room'))
-    return render_template('home.html')
+    return render_template('home.html', code=code, name=name)
 
 @app.route("/room")
 def room():
@@ -93,23 +98,47 @@ def connect(data):
 def disconnect():
     room = session.get("room")
     members = rooms[room]['members']
+    rooms[room]['memberCount'] -= 1
     for member, sid in members.items():
         # Removing by sid, just in case two players have the same name
         if request.sid == sid:
             members.pop(member)
             break
     # Updating the real time feed of the active players 
+    leave_room(room)
     emit('removePlayer', rooms[room]['members'], to=room)
-
-    # \\\\Check if there any members in the room, if not, then use close_room()////
 
 @socketio.on("start_game")
 def start_game():
     is_host = session.get("HOST", False)
     room = session.get('room')
-
+    
     if is_host:
+        for member in rooms[room]['members']:
+            score_track[member] = 0
+    
+        for member, score in score_track:
+            leaderboard_sort.add(member, score)
+
+        while not leaderboard_sort.isEmpty():
+            player = leaderboard.get()
+            leaderboard.append({player.name : player.score})
+
         emit('start_game', to=room, start=True)
+
+@socketio.on("updateScore")
+def update_score(data):
+    name = session.get("name")
+    score_track[name] += data 
+
+    for member, score in score_track:
+        leaderboard_sort.add(member, score)
+    
+    while not leaderboard_sort.isEmpty():
+        player = leaderboard_sort.get()
+        leaderboard.append({player.name : player.score})
+    
+    
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

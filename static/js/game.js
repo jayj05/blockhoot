@@ -39,6 +39,7 @@ function Player(width, height, x, y, gameArea)
             {
                 if (barrier.isEndTile){
                     console.log("hit end tile"); 
+                    
                     gameArea.canvas.dispatchEvent(nextLevel); 
                 }
                 

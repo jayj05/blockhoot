@@ -14,19 +14,25 @@
     const socketio = io(); 
     const activePlayers = document.getElementById("active-players-box"); 
 
+    // Receiving dictionary with player name
     socketio.on('newPlayer', (data) =>{
         activePlayers.innerText += data.name; 
     });
 
+    // Receiving members dictionary which contains the player name as a key 
+    // and their session id as a value
     socketio.on('removePlayer', (data) =>{
         activePlayers.innerText = "";
         for (const key in data) {
             activePlayers.innerText += key; 
         }
     });
-
-    socketio.on('start_game', () =>{
+    
+    // Receiving list of initial zero scores for all members
+    socketio.on('start_game', (data) =>{
         window.location.replace("{{url_for('game')}}");
+        // Add code to initialize leaderboard
+
     });
 
     const btn = document.getElementById("clickme-btn"); 

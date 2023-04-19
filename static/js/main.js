@@ -1,5 +1,5 @@
 (function () {
-
+    const socketio = io(); 
     const gameArea = new GameArea(400, 300, 16, 13);
 
     gameArea.currMap = gameArea.mapSetup(maps.level_1); ; 
@@ -9,6 +9,7 @@
     const moveDone = new Event("moveDone", {bubbles: true}); 
     const startMove = new Event("startMove", {bubbles: true}); 
     const nextLevel = new Event("nextLevel", {bubbles: true}); 
+    const updateScore = new Event("updateScore", {bubble: true}); 
     const canvas = document.querySelector("canvas"); 
 
 
@@ -68,6 +69,11 @@
         }
     }
 
+    function handleUpdateScore ()
+    {
+        socketio.emit()
+    }
+
     toolbox = {
         'kind':'flyoutToolbox',
         'contents': [
@@ -95,10 +101,15 @@
         scrollbars: false
     })
 
+    // params - list[obj]
+    socketio.on('updateLeaderboard', (data) => {
+        // Take top 5 only and display the user's place below the top 5
+    });
+
     document.querySelector("#run-btn").addEventListener("click", handlePlay); 
     canvas.addEventListener("startMove", handleStartMove); 
     canvas.addEventListener("moveDone", player.play); 
     canvas.addEventListener("nextLevel", handleNextLevel); 
-
+    canvas.addEventListener("updateScore", handleUpdateScore); 
     startGame();
 })();
