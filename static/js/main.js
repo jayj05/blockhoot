@@ -17,7 +17,7 @@
     {
         gameArea.clear();
         gameArea.update(gameArea.currMap.map);
-        player.handleMove(moveDone, nextLevel, gameArea.currMap.barriers); 
+        player.handleMove(moveDone, nextLevel, updateScore, gameArea.currMap.barriers); 
         player.update(); 
     }
 
@@ -71,7 +71,7 @@
 
     function handleUpdateScore ()
     {
-        socketio.emit()
+        socketio.emit('updateScore', player.score); 
     }
 
     toolbox = {
@@ -102,8 +102,22 @@
     })
 
     // params - list[obj]
+    // Receiving sorted leaderboard
     socketio.on('updateLeaderboard', (data) => {
+        console.log("[UPDATE LEADERBOARD]");
         // Take top 5 only and display the user's place below the top 5
+        const leaderboard = document.getElementById("leaderboard"); 
+        
+        for (let i = 0; i < data.length; i++)
+        {
+            let playerDiv = document.createElement("div"); 
+            let playerName = data[i]['name']; 
+            let playerScore = data[i]['score']; 
+            playerDiv.innerHTML = playerName + ': ' + playerScore; 
+            playerDiv.style = "color: red;"
+            leaderboard.appendChild(playerDiv); 
+        }
+
     });
 
     document.querySelector("#run-btn").addEventListener("click", handlePlay); 

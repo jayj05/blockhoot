@@ -10,10 +10,8 @@ socketio = SocketIO(app)
 code_characters = '0123456789' + ascii_uppercase
 
 rooms = {} 
-
 score_track = {}
 leaderboard_sort = LeaderBoard()
-leaderboard = []
 
 def generate_unique_code(length):
     generating = True
@@ -62,7 +60,7 @@ def home():
 
         # Redirect them to room page, where the socket will be initalized
         return redirect(url_for('room'))
-    return render_template('home.html', code=code, name=name)
+    return render_template('home.html')
 
 @app.route("/room")
 def room():
@@ -114,31 +112,38 @@ def start_game():
     room = session.get('room')
     
     if is_host:
+        leaderboard = []
+
         for member in rooms[room]['members']:
             score_track[member] = 0
     
-        for member, score in score_track:
+        for member, score in score_track.items():
             leaderboard_sort.add(member, score)
 
         while not leaderboard_sort.isEmpty():
-            player = leaderboard.get()
-            leaderboard.append({player.name : player.score})
+            player = leaderboard_sort.get()
+            leaderboard.append({'name': player.name, 'score': player.score})
 
         emit('start_game', to=room, start=True)
+        
+        
 
 @socketio.on("updateScore")
 def update_score(data):
     name = session.get("name")
+    room = session.get("room")
     score_track[name] += data 
 
-    for member, score in score_track:
+    leaderboard = []
+
+    for member, score in score_track.items():
         leaderboard_sort.add(member, score)
     
     while not leaderboard_sort.isEmpty():
         player = leaderboard_sort.get()
-        leaderboard.append({player.name : player.score})
+        leaderboard.append({'name': player.name, 'score' : player.score})
     
-    
+    emit("updateLeaderboard", leaderboard, to=room)
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

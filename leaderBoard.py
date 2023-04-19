@@ -1,7 +1,7 @@
 from node import Node
 
 # Implementing leaderboard as priority queue
-def LeaderBoard():
+class LeaderBoard():
     def __init__(self):
         self.head = None 
     

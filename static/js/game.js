@@ -27,7 +27,7 @@ function Player(width, height, x, y, gameArea)
         gameArea.context.fillRect(this.x, this.y, width, height);
     }
 
-    this.collisionDetection = (barriers, nextLevel) => {
+    this.collisionDetection = (barriers, nextLevel, updateScore) => {
   
         for (let piece = 0; piece < barriers.length; piece++)
         {
@@ -39,7 +39,8 @@ function Player(width, height, x, y, gameArea)
             {
                 if (barrier.isEndTile){
                     console.log("hit end tile"); 
-                    
+                    this.score += 500; 
+                    gameArea.canvas.dispatchEvent(updateScore)
                     gameArea.canvas.dispatchEvent(nextLevel); 
                 }
                 
@@ -88,30 +89,30 @@ function Player(width, height, x, y, gameArea)
         }
     }
 
-    this.handleMove = (moveEvent, nextLevelEvent, barriers) => {
+    this.handleMove = (moveEvent, nextLevelEvent, updateScoreEvent, barriers) => {
         if (this.stepTrack != 15 && !this.stopMove)
         {
             if (this.isMovingLeft)
             {
-                this.collisionDetection(barriers, nextLevelEvent);
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent);
                 this.x -= 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingRight)
             {
-                this.collisionDetection(barriers, nextLevelEvent); 
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent); 
                 this.x += 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingDown)
             {
-                this.collisionDetection(barriers, nextLevelEvent); 
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent); 
                 this.y += 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingUp)
             {
-                this.collisionDetection(barriers, nextLevelEvent); 
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent); 
                 this.y -= 1; 
                 this.stepTrack += 1; 
             }
