@@ -14,14 +14,14 @@ class LeaderBoard():
             self.head = Node(name, value)
             self.head.next = None
         else:
-            if value > self.head.value:
+            if value > self.head.score:
                 temp = self.head
                 self.head = Node(name, value)
                 self.head.next = temp 
             else:
                 curr = self.head 
-                while curr != None:
-                    if value > curr.next.value:
+                while curr.next != None:
+                    if value > curr.next.score:
                         break 
                     curr = curr.next 
                 

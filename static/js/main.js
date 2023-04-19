@@ -1,11 +1,13 @@
 (function () {
     const socketio = io(); 
-    const gameArea = new GameArea(400, 300, 16, 13);
-
-    gameArea.currMap = gameArea.mapSetup(maps.level_1); ; 
+    const gameArea = new GameArea(300, 300, 5, 5);
+    const path_img = 'static/assets/dirt.png';
+    const barrier_img = 'static/assets/grass1.png';
+    const endtile_img = 'static/assets/dirt.png';
+    gameArea.currMap = gameArea.mapSetup(maps.level_1, path_img, barrier_img, endtile_img);
 
     let levelCount = 1; 
-    const player = new Player(20, 20, gameArea.startX, gameArea.startY, gameArea);
+    const player = new Player(30, 30, gameArea.startX, gameArea.startY, gameArea);
     const moveDone = new Event("moveDone", {bubbles: true}); 
     const startMove = new Event("startMove", {bubbles: true}); 
     const nextLevel = new Event("nextLevel", {bubbles: true}); 
@@ -25,6 +27,7 @@
     {
         gameArea.start(); 
         setInterval(updateGameArea, 20, player, gameArea); 
+        socketio.emit("initGameLoad"); 
     }
 
     function handlePlay() 
@@ -57,13 +60,13 @@
         if (levelCount == 2)
         {
             console.log("level 2"); 
-            gameArea.currMap = gameArea.mapSetup(maps.level_2); 
+            gameArea.currMap = gameArea.mapSetup(maps.level_2, path_img, barrier_img, endtile_img); 
             player.x = gameArea.startX; 
             player.y = gameArea.startY; 
         }
         else if (levelCount == 3)
         {
-            gameArea.currMap = gameArea.mapSetup(maps.level_3);
+            gameArea.currMap = gameArea.mapSetup(maps.level_3, path_img, barrier_img, endtile_img);
             player.x = gameArea.startX; 
             player.y = gameArea.startY; 
         }
@@ -104,17 +107,22 @@
     // params - list[obj]
     // Receiving sorted leaderboard
     socketio.on('updateLeaderboard', (data) => {
-        console.log("[UPDATE LEADERBOARD]");
         // Take top 5 only and display the user's place below the top 5
         const leaderboard = document.getElementById("leaderboard"); 
+        leaderboard.innerHTML = ""; 
         
+        const textContainer = document.createElement("div"); 
+        textContainer.innerHTML = "Leaderboard";
+        textContainer.style = "color: white; margin-bottom: 10px;";
+        leaderboard.appendChild(textContainer); 
+
         for (let i = 0; i < data.length; i++)
         {
             let playerDiv = document.createElement("div"); 
             let playerName = data[i]['name']; 
             let playerScore = data[i]['score']; 
-            playerDiv.innerHTML = playerName + ': ' + playerScore; 
-            playerDiv.style = "color: red;"
+            playerDiv.innerHTML = (i + 1) + '. ' + playerName + ': ' + playerScore; 
+            playerDiv.style = "color: white;"
             leaderboard.appendChild(playerDiv); 
         }
 

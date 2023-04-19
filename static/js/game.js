@@ -20,11 +20,14 @@ function Player(width, height, x, y, gameArea)
 
     this.isTouchingEndTile = false; 
 
-    this.queue = []; 
+    this.queue = [];
+    
+    this.img = new Image(); 
 
     this.update = () => {
-        gameArea.context.fillStyle = "blue"; 
-        gameArea.context.fillRect(this.x, this.y, width, height);
+        
+        gameArea.context.drawImage(this.img, this.x, this.y, this.width, this.height);
+        this.img.src = 'static/assets/shrek.png';
     }
 
     this.collisionDetection = (barriers, nextLevel, updateScore) => {
@@ -37,14 +40,19 @@ function Player(width, height, x, y, gameArea)
                 ((this.y + this.height >= barrier.y && this.y + this.height <= barrier.y + barrier.height)||
                  (this.y <= barrier.y + barrier.height && this.y >= barrier.y)))
             {
-                if (barrier.isEndTile){
+                if (barrier.isEndTile)
+                {
                     console.log("hit end tile"); 
                     this.score += 500; 
+                    this.isTouchingEndTile = true
                     gameArea.canvas.dispatchEvent(updateScore)
                     gameArea.canvas.dispatchEvent(nextLevel); 
                 }
-                
+                console.log('collision'); 
                 this.stopMove = true; 
+                this.x = this.startX; 
+                this.y = this.startY; 
+                this.queue = []
             }
         }
     }
@@ -90,7 +98,7 @@ function Player(width, height, x, y, gameArea)
     }
 
     this.handleMove = (moveEvent, nextLevelEvent, updateScoreEvent, barriers) => {
-        if (this.stepTrack != 15 && !this.stopMove)
+        if (this.stepTrack <= gameArea.moveDistance && !this.stopMove)
         {
             if (this.isMovingLeft)
             {
@@ -131,19 +139,19 @@ function Player(width, height, x, y, gameArea)
 }
 
 
-function Component(width, height, x, y, context, isEndTile)
+function Component(width, height, x, y, context, isEndTile, img_source)
 {
     this.width = width; 
     this.height = height; 
     this.x = x; 
     this.y = y; 
-    this.color = "black"; 
     this.isEndTile = isEndTile; 
+    this.img = new Image(); 
 
     this.update = () => {
         // Redrawing object every frame of the game
-        context.fillStyle = this.color; 
-        context.fillRect(this.x, this.y, width, height); 
+        context.drawImage(this.img, this.x, this.y, this.width, this.height);
+        this.img.src = img_source; 
     }
 }
 
@@ -155,6 +163,7 @@ function GameArea(width, height, rowCount, colCount)
 
     this.rowCount = rowCount; 
     this.colCount = colCount; 
+    this.moveDistance = width/rowCount;
     // X and Y position for start tile 
     this.startX = 0; 
     this.startY = 0;
@@ -173,7 +182,7 @@ function GameArea(width, height, rowCount, colCount)
         this.context.clearRect(0, 0, width, height);
     }
 
-    this.mapSetup = (map) => {
+    this.mapSetup = (map, path_img, barrier_img, endtile_img) => {
         // Map Layout
         const pieceWidth = width/colCount;
         const pieceHeight = height/rowCount;
@@ -188,30 +197,34 @@ function GameArea(width, height, rowCount, colCount)
             for (let col = 0; col < colCount; col++)
             {
                 const tile = map[row][col]; 
-                // Regular black barrier tile
-                if (tile == 1) 
+
+                if (tile == 0)
                 {
                     mapPiece = new Component(pieceWidth, pieceHeight, 
-                        pieceWidth*col, pieceHeight*row, this.context, false);
+                        pieceWidth*col, pieceHeight*row, this.context, false, barrier_img);
                     mapPieces.push(mapPiece); 
-                    barrierPieces.push(mapPiece)
+                    barrierPieces.push(mapPiece); 
+                }
+                else if (tile == 1) 
+                {
+                    mapPiece = new Component(pieceWidth, pieceHeight, 
+                        pieceWidth*col, pieceHeight*row, this.context, false, path_img);
+                    mapPieces.push(mapPiece); 
                 }
                 // Start tile 
                 else if (tile == 2)
                 {
                     mapPiece = new Component(pieceWidth, pieceHeight,
-                        pieceWidth*col, pieceHeight*row, this.context, false); 
+                        pieceWidth*col, pieceHeight*row, this.context, false, path_img); 
                     this.startX = pieceWidth*col; 
                     this.startY = pieceHeight*row; 
-                    mapPiece.color = "green"; 
                     mapPieces.push(mapPiece); 
                 }
                 // End tile 
                 else if (tile == 3)
                 {
                     mapPiece = new Component(pieceWidth, pieceHeight,
-                        pieceWidth*col, pieceHeight*row, this.context, true); 
-                    mapPiece.color = "red"; 
+                        pieceWidth*col, pieceHeight*row, this.context, true, endtile_img); 
                     mapPiece.isEndTile = true; 
                     mapPieces.push(mapPiece); 
                     barrierPieces.push(mapPiece); 

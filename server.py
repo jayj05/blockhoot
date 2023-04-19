@@ -89,7 +89,7 @@ def connect(data):
     print(rooms[room]['members'])
     # Updating the active players
     emit('newPlayer', {'name': name}, to=room)
-
+    
 # Delete them from the current members of room, 
 # then send to server new current members
 @socketio.on('disconnect')
@@ -112,21 +112,23 @@ def start_game():
     room = session.get('room')
     
     if is_host:
-        leaderboard = []
-
-        for member in rooms[room]['members']:
-            score_track[member] = 0
-    
-        for member, score in score_track.items():
-            leaderboard_sort.add(member, score)
-
-        while not leaderboard_sort.isEmpty():
-            player = leaderboard_sort.get()
-            leaderboard.append({'name': player.name, 'score': player.score})
-
         emit('start_game', to=room, start=True)
-        
-        
+
+@socketio.on("initGameLoad")
+def init_leaderboard():
+    room = session.get('room')
+    leaderboard = []
+
+    for member in rooms[room]['members']:
+        score_track[member] = 0
+    
+    for member, score in score_track.items():
+        leaderboard_sort.add(member, score)
+
+    while not leaderboard_sort.isEmpty():
+        player = leaderboard_sort.get()
+        leaderboard.append({'name': player.name, 'score': player.score})
+    emit('updateLeaderboard', leaderboard, to=room)   
 
 @socketio.on("updateScore")
 def update_score(data):
