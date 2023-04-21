@@ -88,7 +88,7 @@ def connect(data):
     rooms[room]['members'][name] = request.sid
     print(rooms[room]['members'])
     # Updating the active players
-    emit('newPlayer', {'name': name}, to=room)
+    emit('newPlayer', {'name': name, 'memberCount': rooms[room]['memberCount']}, to=room)
     
 # Delete them from the current members of room, 
 # then send to server new current members

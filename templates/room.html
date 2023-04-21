@@ -3,27 +3,69 @@
 <div class="room-code-container"><div id="room-code-text">Room Code: {{code}}</div></div>
 <button id="start-game-btn">START GAME</button>
 <div class="active-players-box" id="active-players-box">
-    <!-- <div class="column"></div>
-    <div class="column"></div>
-    <div class="column"></div> -->
+    <div class="column" id="c1"></div>
+    <div class="column" id="c2"></div>
+    <div class="column" id="c3"></div>
 </div>
 
 <script type="text/javascript">
     // Initializing socket on client side
     const socketio = io(); 
-    const activePlayers = document.getElementById("active-players-box"); 
+    const c1 = document.getElementById("c1"); 
+    const c2 = document.getElementById("c2"); 
+    const c3 = document.getElementById("c3"); 
 
     // Receiving dictionary with player name
     socketio.on('newPlayer', (data) =>{
-        activePlayers.innerText += data.name; 
+        if (data.memberCount >= 9)
+        {
+            let div = document.createElement('div'); 
+            div.innerHTML = data.name; 
+            c3.appendChild(div); 
+        }
+        else if (data.memberCount >= 5)
+        {
+            let div = document.createElement('div'); 
+            div.innerHTML = data.name; 
+            c2.appendChild(div); 
+        }
+        else
+        {
+            let div = document.createElement("div"); 
+            div.innerHTML = data.name; 
+            c1.appendChild(div); 
+        }
     });
 
     // Receiving members dictionary which contains the player name as a key 
     // and their session id as a value
     socketio.on('removePlayer', (data) =>{
-        activePlayers.innerText = "";
-        for (const key in data) {
-            activePlayers.innerText += key; 
+        c1.innerHTML = "";
+        c2.innerHTML = "";
+        c3.innerHTML = ""; 
+        let count = 1; 
+        for (const key in data)
+        {
+            console.log(count)
+            if (count >= 9)
+            {
+                let div = document.createElement("div"); 
+                div.innerHTML = key; 
+                c3.appendChild(div); 
+            }
+            else if (count >= 5)
+            {
+                let div = document.createElement("div"); 
+                div.innerHTML = key; 
+                c2.appendChild(div); 
+            }
+            else
+            {
+                let div = document.createElement("div"); 
+                div.innerHTML = key; 
+                c1.appendChild(div); 
+            }
+            count++; 
         }
     });
     
@@ -45,12 +87,32 @@
 {% if members %}
 <!--Then then the activePlayers feed will be cleared-->
 <script type="text/javascript">
-    activePlayers.innerText = "";
+    c1.innerHTML = "";
+    c2.innerHTML = ""; 
+    c3.innerHTML = ""; 
+    let count = 1; 
 </script>
     <!--And updated with the current members-->
     {% for member in members %}
         <script type="text/javascript">
-            activePlayers.innerText += "{{member}}"; 
+            if (count >= 9)
+            {
+                let div = document.createElement("div"); 
+                div.innerHTML = "{{member}}"; 
+                c3.appendChild(div); 
+            }
+            else if (count >= 5)
+            {
+                let div = document.createElement("div"); 
+                div.innerHTML = "{{member}}"; 
+                c2.appendChild(div);  
+            }
+            else 
+            {
+                let div = document.createElement("div"); 
+                div.innerHTML = "{{member}}"; 
+                c1.appendChild(div); 
+            }
         </script>
     {% endfor %}
 {% endif %}

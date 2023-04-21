@@ -37,7 +37,8 @@ function Player(width, height, x, y, gameArea)
             if (((this.x <= barrier.x + barrier.width && this.x >= barrier.x) || 
                  (this.x + this.width >= barrier.x && this.x + this.width <= barrier.x + barrier.width)) &&
                 ((this.y + this.height >= barrier.y && this.y + this.height <= barrier.y + barrier.height)||
-                 (this.y <= barrier.y + barrier.height && this.y >= barrier.y)))
+                 (this.y <= barrier.y + barrier.height && this.y >= barrier.y)) || this.x + this.width > 300 || this.x < 0 ||
+                    this.y + this.height > 300 || this.y < 0)
             {
                 if (barrier.isEndTile)
                 {
@@ -53,6 +54,7 @@ function Player(width, height, x, y, gameArea)
                     this.stopMove = true; 
                     this.x = this.startX; 
                     this.y = this.startY; 
+                    console.log(this.x + " " + this.y); 
                 }
                 this.queue = []
             }

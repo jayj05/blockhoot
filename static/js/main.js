@@ -1,6 +1,6 @@
 (function () {
     const socketio = io(); 
-    const gameArea = new GameArea(300, 300, 5, 5);
+    var gameArea = new GameArea(300, 300, 5, 5);
     const path_img = 'static/assets/dirt.png';
     const barrier_img = 'static/assets/grass1.png';
     const endtile_img = 'static/assets/dirt.png';
@@ -61,15 +61,19 @@
         {
             console.log("level 2"); 
             gameArea.currMap = gameArea.mapSetup(maps.level_2, path_img, barrier_img, endtile_img); 
-            player.x = gameArea.startX + 10; 
-            player.y = gameArea.startY; 
+            player.startX = gameArea.startX + 10; 
+            player.startY = gameArea.startY + 5; 
+            player.x = player.startX; 
+            player.y = player.startY; 
             console.log(player.x + " " + player.y); 
         }
         else if (levelCount == 3)
         {
             gameArea.currMap = gameArea.mapSetup(maps.level_3, path_img, barrier_img, endtile_img);
-            player.x = gameArea.startX + 10; 
-            player.y = gameArea.startY; 
+            player.startX = gameArea.startX + 15; 
+            player.startY = gameArea.startY + 5; 
+            player.x = player.startX; 
+            player.y = player.startY; 
             console.log(player.x + " " + player.y); 
         }
     }
