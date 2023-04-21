@@ -20,7 +20,7 @@
         gameArea.clear();
         gameArea.update(gameArea.currMap.map);
         player.handleMove(moveDone, nextLevel, updateScore, gameArea.currMap.barriers); 
-        player.update(); 
+        player.update();  
     }
 
     function startGame()
@@ -64,13 +64,13 @@
             player.x = gameArea.startX + 10; 
             player.y = gameArea.startY; 
             console.log(player.x + " " + player.y); 
-        
         }
         else if (levelCount == 3)
         {
             gameArea.currMap = gameArea.mapSetup(maps.level_3, path_img, barrier_img, endtile_img);
             player.x = gameArea.startX + 10; 
             player.y = gameArea.startY; 
+            console.log(player.x + " " + player.y); 
         }
     }
 

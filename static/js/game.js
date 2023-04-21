@@ -25,7 +25,6 @@ function Player(width, height, x, y, gameArea)
     this.img = new Image(); 
 
     this.update = () => {
-        
         gameArea.context.drawImage(this.img, this.x, this.y, this.width, this.height);
         this.img.src = 'static/assets/shrek.png';
     }
@@ -43,15 +42,18 @@ function Player(width, height, x, y, gameArea)
                 if (barrier.isEndTile)
                 {
                     console.log("hit end tile"); 
-                    this.score += 500; 
-                    this.isTouchingEndTile = true
+                    this.score += 500;
+                    this.stopMove = true 
                     gameArea.canvas.dispatchEvent(updateScore)
                     gameArea.canvas.dispatchEvent(nextLevel); 
                 }
-                console.log('collision'); 
-                this.stopMove = true; 
-                this.x = this.startX; 
-                this.y = this.startY; 
+                else
+                {
+                    console.log('collision'); 
+                    this.stopMove = true; 
+                    this.x = this.startX; 
+                    this.y = this.startY; 
+                }
                 this.queue = []
             }
         }

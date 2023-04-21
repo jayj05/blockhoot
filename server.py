@@ -134,7 +134,8 @@ def init_leaderboard():
 def update_score(data):
     name = session.get("name")
     room = session.get("room")
-    score_track[name] += data 
+
+    score_track[name] = data 
 
     leaderboard = []
 
