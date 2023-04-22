@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Leaderboard</h2>
+
+  <div id="winner"></div>
+  <div id="podium"></div>
+
+
+<button id="homeButton">Home Page</button>
+
+<script type="text/javascript" src="{{url_for('static', filename='js/podium.js')}}"></script>
+{% endblock %}

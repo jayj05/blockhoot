@@ -29,7 +29,7 @@ function Player(width, height, x, y, gameArea)
         this.img.src = 'static/assets/shrek.png';
     }
 
-    this.collisionDetection = (barriers, nextLevel, updateScore) => {
+    this.collisionDetection = (barriers, nextLevel, updateScore, endGame) => {
   
         for (let piece = 0; piece < barriers.length; piece++)
         {
@@ -40,7 +40,15 @@ function Player(width, height, x, y, gameArea)
                  (this.y <= barrier.y + barrier.height && this.y >= barrier.y)) || this.x + this.width > 300 || this.x < 0 ||
                     this.y + this.height > 300 || this.y < 0)
             {
-                if (barrier.isEndTile)
+                if (barrier.isEndGameTile)
+                {
+                    console.log("End game")
+                    this.score += 500; 
+                    this.stopMove = true; 
+                    gameArea.canvas.dispatchEvent(updateScore); 
+                    gameArea.canvas.dispatchEvent(endGame); 
+                }
+                else if (barrier.isEndTile)
                 {
                     console.log("hit end tile"); 
                     this.score += 500;
@@ -101,30 +109,30 @@ function Player(width, height, x, y, gameArea)
         }
     }
 
-    this.handleMove = (moveEvent, nextLevelEvent, updateScoreEvent, barriers) => {
+    this.handleMove = (moveEvent, nextLevelEvent, updateScoreEvent, endGameEvent, barriers) => {
         if (this.stepTrack <= gameArea.moveDistance && !this.stopMove)
         {
             if (this.isMovingLeft)
             {
-                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent);
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent, endGameEvent);
                 this.x -= 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingRight)
             {
-                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent); 
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent, endGameEvent); 
                 this.x += 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingDown)
             {
-                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent); 
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent, endGameEvent); 
                 this.y += 1; 
                 this.stepTrack += 1; 
             }
             else if (this.isMovingUp)
             {
-                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent); 
+                this.collisionDetection(barriers, nextLevelEvent, updateScoreEvent, endGameEvent); 
                 this.y -= 1; 
                 this.stepTrack += 1; 
             }
@@ -150,6 +158,7 @@ function Component(width, height, x, y, context, isEndTile, img_source)
     this.x = x; 
     this.y = y; 
     this.isEndTile = isEndTile; 
+    this.isEndGameTile = false; 
     this.img = new Image(); 
 
     this.update = () => {
@@ -231,6 +240,14 @@ function GameArea(width, height, rowCount, colCount)
                     mapPiece = new Component(pieceWidth, pieceHeight,
                         pieceWidth*col, pieceHeight*row, this.context, true, endtile_img); 
                     mapPiece.isEndTile = true; 
+                    mapPieces.push(mapPiece); 
+                    barrierPieces.push(mapPiece); 
+                }
+                else if (tile == 4)
+                {
+                    mapPiece = new Component(pieceWidth, pieceHeight,
+                        pieceWidth*col, pieceHeight*row, this.context, true, endtile_img); 
+                    mapPiece.isEndGameTile = true; 
                     mapPieces.push(mapPiece); 
                     barrierPieces.push(mapPiece); 
                 }

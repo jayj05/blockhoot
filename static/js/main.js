@@ -12,6 +12,7 @@
     const startMove = new Event("startMove", {bubbles: true}); 
     const nextLevel = new Event("nextLevel", {bubbles: true}); 
     const updateScore = new Event("updateScore", {bubble: true}); 
+    const endGame = new Event("endGame", {bubble: true}); 
     const canvas = document.querySelector("canvas"); 
 
 
@@ -19,7 +20,7 @@
     {
         gameArea.clear();
         gameArea.update(gameArea.currMap.map);
-        player.handleMove(moveDone, nextLevel, updateScore, gameArea.currMap.barriers); 
+        player.handleMove(moveDone, nextLevel, updateScore, endGame, gameArea.currMap.barriers); 
         player.update();  
     }
 
@@ -78,9 +79,14 @@
         }
     }
 
-    function handleUpdateScore ()
+    function handleUpdateScore()
     {
         socketio.emit('updateScore', player.score); 
+    }
+
+    function handleEndGame()
+    {
+        socketio.emit("endGame"); 
     }
 
     toolbox = {
@@ -134,10 +140,15 @@
 
     });
 
+    socketio.on("endGame", (data) => {
+        window.location.href = "/podium";    
+    });
+
     document.querySelector("#run-btn").addEventListener("click", handlePlay); 
     canvas.addEventListener("startMove", handleStartMove); 
     canvas.addEventListener("moveDone", player.play); 
     canvas.addEventListener("nextLevel", handleNextLevel); 
     canvas.addEventListener("updateScore", handleUpdateScore); 
+    canvas.addEventListener("endGame", handleEndGame); 
     startGame();
 })();

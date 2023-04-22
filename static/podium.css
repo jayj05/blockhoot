@@ -1,0 +1,19 @@
+
+#winner {
+    width: 60%; 
+    height: 100px; 
+    text-align: center;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#podium {
+    width: 40%; 
+    height: 400px;
+    display: flex; 
+    flex-direction: column;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}

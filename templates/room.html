@@ -71,7 +71,7 @@
     
     // Receiving list of initial zero scores for all members
     socketio.on('start_game', (data) =>{
-        window.location.replace("{{url_for('game')}}");
+        window.location.href = "/game"
         // Add code to initialize leaderboard
     });
 

@@ -12,6 +12,7 @@ code_characters = '0123456789' + ascii_uppercase
 rooms = {} 
 score_track = {}
 leaderboard_sort = LeaderBoard()
+final_leaderboard = []
 
 def generate_unique_code(length):
     generating = True
@@ -75,6 +76,9 @@ def room():
 def game():
     return render_template('game.html')
 
+@app.route("/podium")
+def podium():
+    return render_template('podium.html')
 # when the room page is rendered
 @socketio.on('connect')
 def connect(data):
@@ -112,11 +116,12 @@ def start_game():
     room = session.get('room')
     
     if is_host:
-        emit('start_game', to=room, start=True)
+        emit('start_game', to=room)
 
 @socketio.on("initGameLoad")
 def init_leaderboard():
     room = session.get('room')
+    final_leaderboard = []
     leaderboard = []
 
     for member in rooms[room]['members']:
@@ -148,5 +153,30 @@ def update_score(data):
     
     emit("updateLeaderboard", leaderboard, to=room)
 
+@socketio.on("podiumData")
+def podium_data():
+    room = session.get("room"); 
+    print(final_leaderboard)
+    emit("renderPodium", final_leaderboard, to=room)
+
+@socketio.on("endGame")
+def end_game():
+    print("game ending")
+    room = session.get("room")
+
+    for member, score in score_track.items():
+        leaderboard_sort.add(member, score)
+    
+    while not leaderboard_sort.isEmpty():
+        player = leaderboard_sort.get()
+        final_leaderboard.append({'name' : player.name, 'score' : player.score})
+    
+    emit("endGame", to=room)
+@socketio.on("refreshPage")
+def refresh_page():
+    if session.get("HOST", False):
+        rooms.clear()
+        emit("goHome")
+
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0")
